@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Selamat Hari Raya Aidilfitri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Soft Yellow Theme & Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            /* Prevent tap highlights on mobile */
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        body {
+            background-color: #fdfae2; 
+            font-family: 'Poppins', sans-serif;
+            color: #4a4011;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Prevent scrolling on mobile so it feels like an app */
+            overflow: hidden; 
+        }
+
+        /* --- AUDIO & COVER PAGE (To trigger music on phones) --- */
+        #coverPage {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #fdfae2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        #coverPage.hidden {
+            opacity: 0;
+            transform: translateY(-50px);
+            pointer-events: none;
+        }
+
+        .envelope-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            max-width: 500px; /* Perfect for mobile */
+            padding: 20px;
+            text-align: center;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- PAGE 1 STYLES --- */
+        #page1 {
+            opacity: 0; /* Hidden initially until cover opens */
+            transform: scale(0.9);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #page1.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        #page1.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(2.5rem, 8vw, 3.5rem); /* Scales perfectly on mobile */
+            color: #d4af37; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: 400;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        textarea {
+            width: 90%;
+            max-width: 400px;
+            height: 140px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 2px dashed #d4af37;
+            border-radius: 15px;
+            padding: 15px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: #555;
+            resize: none;
+            text-align: center;
+            outline: none;
+            margin-bottom: 30px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        button {
+            background-color: #d4af37;
+            color: #fff;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            z-index: 10;
+        }
+
+        button:active {
+            transform: scale(0.95); /* Better touch feedback for phones */
+        }
+
+        /* --- PAGE 2 STYLES (THE BOUQUET) --- */
+        #page2 {
+            opacity: 0;
+            transform: translateY(50px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #page2.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+            z-index: 3;
+        }
+
+        .bouquet-container {
+            position: relative;
+            width: 300px;
+            height: 420px;
+            margin-bottom: 20px;
+            transform: scale(0) translateY(200px);
+            opacity: 0;
+            filter: drop-shadow(0 20px 20px rgba(168, 143, 45, 0.35)); /* Adjusted for mobile */
+        }
+
+        .bouquet-container.bloom {
+            animation: popUpFlower 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes popUpFlower {
+            0% { transform: scale(0) translateY(200px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* --- THE PAPER WRAPPER --- */
+        .wrapper-back {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 240px;
+            height: 230px;
+            background-color: #fdfdfd;
+            clip-path: polygon(0 0, 100% 0, 65% 100%, 35% 100%);
+            z-index: 1;
+            box-shadow: inset 0 15px 30px rgba(0,0,0,0.08); 
+        }
+
+        .wrapper-front {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            height: 180px;
+            background-color: #ffffff; 
+            clip-path: polygon(0 15%, 100% 0, 65% 100%, 35% 100%);
+            z-index: 20;
+            border-top: 2px solid #f0f0f0; 
+        }
+
+        /* Ribbon / Bow */
+        .ribbon {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+            background-color: #ffb6c1;
+            border-radius: 20px;
+            z-index: 25;
+            box-shadow: 0 6px 15px rgba(255, 182, 193, 0.5); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ribbon::before, .ribbon::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            width: 20px;
+            height: 50px;
+            background-color: #ffb6c1;
+            border-radius: 5px;
+            z-index: 24;
+        }
+
+        .ribbon::before { left: 25px; transform: rotate(20deg); }
+        .ribbon::after { right: 25px; transform: rotate(-20deg); }
+
+        .ribbon-knot {
+            width: 20px;
+            height: 20px;
+            background-color: #ff9fb0;
+            border-radius: 50%;
+            z-index: 26;
+        }
+
+        /* --- THE GREENERY --- */
+        .leaves {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            height: 140px;
+            background-color: #558b2f;
+            border-radius: 50% 50% 0 0;
+            z-index: 2;
+        }
+
+        /* --- THE FACES --- */
+        .faces-cluster {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 260px;
+            z-index: 10;
+        }
+
+        .face {
+            position: absolute;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            transition: transform 0.3s ease;
+            background-color: #fff;
+        }
+
+        .face:active {
+            transform: scale(1.1) !important; /* Touch feedback on mobile */
+            z-index: 50 !important;
+        }
+
+        /* Custom positioning scaled down slightly for smaller screens */
+        .f1 { width: 95px; height: 95px; top: 100px; left: 50%; transform: translateX(-50%); z-index: 15; border-color: #d4af37; border-width: 4px; } 
+        .f2 { width: 75px; height: 75px; top: 60px; left: 15%; z-index: 12; } 
+        .f3 { width: 75px; height: 75px; top: 60px; left: auto; right: 15%; z-index: 12; } 
+        .f4 { width: 65px; height: 65px; top: 10px; left: 50%; transform: translateX(-50%); z-index: 8; } 
+        .f5 { width: 65px; height: 65px; top: 25px; left: 25%; z-index: 9; } 
+        .f6 { width: 65px; height: 65px; top: 25px; left: auto; right: 25%; z-index: 9; } 
+        .f7 { width: 65px; height: 65px; top: 130px; left: 5%; z-index: 18; } 
+        .f8 { width: 65px; height: 65px; top: 130px; left: auto; right: 5%; z-index: 18; } 
+
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="RAYA.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="coverPage">
+        <div class="envelope-icon">💌</div>
+        <h2 style="color: #d4af37; font-family: 'Pacifico', cursive; margin-bottom: 20px;">seperti dijanjikan sayang..maaf lewat</h2>
+        <button onclick="startExperience()">Buka Kad</button>
+    </div>
+
+    <div id="page1" class="page">
+        <h1>Selamat Hari Raya Sayang!!</h1>
+        <h2>Maaf Zahir & Batin</h2>
+        
+        <textarea id="customWishes" spellcheck="false">Semoga Aidilfitri ini membawa kebahagiaan, kedamaian, dan keberkatan kepada kita semua. Ampunkan segala salah dan silap bby jika ada terkasar bahasa,buat kamu menangis, kita bergaduh, bby betul betul minta maaf dan berharap raya kalini kita akan sambut tiap tahun sehingga boleh beraya bersama hihihihihi.
+
+Ikhlas daripada babiey kamuuu.</textarea>
+        
+        <button onclick="showFlower()">tekan sini sayang</button>
+    </div>
+
+    <div id="page2" class="page">
+        
+        <div class="bouquet-container" id="bouquetAnimation">
+            <div class="wrapper-back"></div>
+            <div class="leaves"></div>
+
+            <div class="faces-cluster">
+                <img class="face f1" src="raya 2.jpeg" alt="Center Front">
+                <img class="face f2" src="raya 2.jpeg" alt="Mid Left">
+                <img class="face f3" src="raya 2.jpeg" alt="Mid Right">
+                <img class="face f4" src="raya 2.jpeg" alt="Top Center">
+                <img class="face f5" src="raya 2.jpeg" alt="Top Left">
+                <img class="face f6" src="raya 2.jpeg" alt="Top Right">
+                <img class="face f7" src="raya 2.jpeg" alt="Bottom Left">
+                <img class="face f8" src="raya 2.jpeg alt="Bottom Right">
+            </div>
+
+            <div class="wrapper-front"></div>
+            <div class="ribbon"><div class="ribbon-knot"></div></div>
+        </div>
+        
+        <button onclick="goBack()">Kembali</button>
+    </div>
+
+    <script>
+        // 1. Function to clear cover screen, start music, and show Page 1
+        function startExperience() {
+            // Start the music
+            let music = document.getElementById("bgMusic");
+            music.volume = 0.5; // Set volume to 50% so it's not too loud
+            music.play();
+
+            // Hide cover and show Page 1
+            document.getElementById('coverPage').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('page1').classList.add('active');
+            }, 300);
+        }
+
+        // 2. Go to Page 2 (Music keeps playing because we don't reload the site)
+        function showFlower() {
+            document.getElementById('page1').classList.add('hidden');
+            document.getElementById('page1').classList.remove('active');
+            
+            setTimeout(() => {
+                document.getElementById('page2').classList.add('active');
+                document.getElementById('bouquetAnimation').classList.add('bloom');
+            }, 300);
+        }
+
+        // 3. Go back to Page 1
+        function goBack() {
+            document.getElementById('page2').classList.remove('active');
+            document.getElementById('bouquetAnimation').classList.remove('bloom');
+            
+            setTimeout(() => {
+                document.getElementById('page1').classList.remove('hidden');
+                document.getElementById('page1').classList.add('active');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
